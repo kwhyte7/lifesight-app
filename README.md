@@ -3,19 +3,12 @@
 LifeSight becomes a **health intelligence platform** connecting:
 
 * patients
-
 * doctors
-
 * wearable devices
-
 * health data
-
 * remote monitoring
 
 Instead of just a wearable app, it becomes a **health operating system for primary care**.
-
-Your core promise:
-
 LifeSight turns everyday health data into medical insights doctors can use.
 
 ---
@@ -29,13 +22,9 @@ To include everyone, LifeSight collects health data from **multiple sources**.
 Using a smartphone alone, LifeSight can track:
 
 * step count
-
 * movement/activity
-
 * sleep estimates
-
 * lifestyle check-ins
-
 * symptom logs
 
 This makes it accessible to **almost anyone with a phone**.
@@ -47,15 +36,10 @@ This makes it accessible to **almost anyone with a phone**.
 Users can log:
 
 * blood pressure
-
 * weight
-
 * symptoms
-
 * medications
-
 * mood
-
 * pain levels
 
 This creates valuable health history even without devices.
@@ -70,11 +54,8 @@ For people using devices from companies like
 LifeSight adds:
 
 * heart rate
-
 * sleep stages
-
 * activity intensity
-
 * recovery metrics
 
 This is where deeper insights happen.
@@ -86,11 +67,8 @@ This is where deeper insights happen.
 Patients can connect:
 
 * blood pressure cuffs
-
 * glucose monitors
-
 * smart scales
-
 * ECG devices
 
 Now the system becomes **clinical-grade monitoring**.
@@ -130,11 +108,8 @@ Patients flagged today: 3
 Clicking a patient shows:
 
 * health trends
-
 * alerts
-
 * timeline
-
 * recommended follow-up
 
 The goal: **save doctors time**.
@@ -152,17 +127,13 @@ LifeSight can support **Remote Patient Monitoring (RPM)** programs.
 Doctors get reimbursed for:
 
 * reviewing patient data
-
 * monitoring chronic conditions
-
 * remote check-ins
 
 LifeSight helps them:
 
 * track monitoring time
-
 * generate reports
-
 * identify eligible patients
 
 So doctors **earn money using the platform**.
@@ -174,11 +145,8 @@ So doctors **earn money using the platform**.
 Patients get access to:
 
 * their health data
-
 * health trends
-
 * AI insights
-
 * doctor communication
 
 Example:
@@ -201,9 +169,7 @@ Why am I feeling fatigued?
 The system suggests:
 
 * possible causes
-
 * lifestyle changes
-
 * whether to contact a doctor
 
 Important note: it should **never replace real medical care**, but guide people to the right help.
@@ -219,12 +185,9 @@ To scale large, LifeSight needs multiple revenue streams.
 Charge clinics per monitored patient.
 
 Example:
-
-$25 per monitored patient/month
-
+$5 per monitored patient/month
 A clinic with 200 monitored patients:
-
-$5,000/month  
+$1,000/month  
 ---
 
 ### **Patient Premium Features**
@@ -232,9 +195,7 @@ $5,000/month
 Optional premium tier:
 
 * advanced health insights
-
 * personalized reports
-
 * wellness coaching
 
 ---
@@ -242,7 +203,6 @@ Optional premium tier:
 ### **Hospital Partnerships**
 
 Hospitals want to monitor high-risk patients remotely.
-
 LifeSight could manage those monitoring programs.
 
 ---
@@ -258,9 +218,7 @@ Large datasets about health trends can support medical research if handled ethic
 The real power comes from connecting three groups:
 
 1. patients
-
 2. doctors
-
 3. wearable data
 
 More patients → more data  
@@ -276,9 +234,7 @@ This creates a **network effect**.
 To scale globally, LifeSight should focus on:
 
 * software first
-
 * cloud infrastructure
-
 * partnerships with device manufacturers
 
 You don’t need to build hardware.
@@ -292,12 +248,9 @@ LifeSight focuses on **interpreting it**.
 # **11\. The Long-Term Vision**
 
 LifeSight becomes:
-
 The platform where doctors view wearable health data.
-
 Think of it as:
-
-**“The medical layer on top of wearable technology.”**
+**“The medical/understanding layer on top of wearable technology.”**
 
 ---
 
@@ -314,9 +267,7 @@ Seed funding
 Investors care about:
 
 * real doctor demand
-
 * early clinic partners
-
 * patient adoption
 
 ---
@@ -326,13 +277,9 @@ Investors care about:
 The strongest version of LifeSight would:
 
 * work with or without wearables
-
 * make doctors money through monitoring programs
-
 * give patients real health insights
-
 * connect everyday health data to clinical care
-
 * scale through partnerships and software
 
 The focus should always be:
