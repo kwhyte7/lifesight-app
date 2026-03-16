@@ -216,3 +216,10 @@ erDiagram
     Organisation ||--o{ DataConsent : "receives consent from"
 ```
 
+
+# Coding Conventions
+
+we're going to implement JWT token authentication to this fastapi backend
+You should comment everything you do so I can learn from this, and so that it's easy to read
+
+You should use Functional programming paradigms where possible

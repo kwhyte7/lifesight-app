@@ -1,0 +1,261 @@
+
+import fastapi
+from fastapi.security import OAuth2PasswordBearer
+from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.middleware.cors import CORSMiddleware
+from datetime import datetime, timedelta
+from typing import Optional
+import jwt
+from pydantic import BaseModel
+from passlib.context import CryptContext
+
+# Configuration for JWT authentication
+SECRET_KEY = "your-secret-key-here-change-in-production"  # Change this in production!
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+# Password hashing context
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+# OAuth2 scheme for token authentication
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+# Pydantic models for request/response validation
+class Token(BaseModel):
+    """Model for JWT token response"""
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    """Model for decoded token data"""
+    username: Optional[str] = Noneimport fastapi
+from fastapi.security import OAuth2PasswordBearer
+
+
+
+class User(BaseModel):
+    """Model for user data"""
+    username: str
+    email: Optional[str] = None
+    full_name: Optional[str] = None
+    disabled: Optional[bool] = None
+
+class UserInDB(User):
+    """Model for user data in database (includes hashed password)"""
+    hashed_password: str
+
+class UserCreate(BaseModel):
+    """Model for user registration"""
+    username: str
+    email: str
+    full_name: str
+    password: str
+
+# Mock database (replace with real database in production)
+fake_users_db = {
+    "johndoe": {
+        "username": "johndoe",
+        "full_name": "John Doe",
+        "email": "johndoe@example.com",
+        "hashed_password": "$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",  # "secret"
+        "disabled": False,
+    }
+}
+
+# Utility functions
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Verify a plain password against a hashed password"""
+    return pwd_context.verify(plain_password, hashed_password)
+
+def get_password_hash(password: str) -> str:
+    """Hash a password for storage"""
+    return pwd_context.hash(password)
+
+def get_user(db, username: str):
+    """Retrieve user from database by username"""
+    if username in db:
+        user_dict = db[username]
+        return UserInDB(**user_dict)
+    return None
+
+def authenticate_user(fake_db, username: str, password: str):
+    """Authenticate user with username and password"""
+    user = get_user(fake_db, username)
+    if not user:
+        return False
+    if not verify_password(password, user.hashed_password):
+        return False
+    return user
+
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+    """Create a JWT access token with expiration"""
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    """Dependency to get current user from JWT token"""
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        # Decode and validate JWT token
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise credentials_exception
+        token_data = TokenData(username=username)
+    except jwt.PyJWTError:
+        raise credentials_exception
+    
+    # Get user from database
+    user = get_user(fake_users_db, username=token_data.username)
+    if user is None:
+        raise credentials_exception
+    return user
+
+async def get_current_active_user(current_user: User = Depends(get_current_user)):
+    """Dependency to ensure current user is active (not disabled)"""
+    if current_user.disabled:
+        raise HTTPException(status_code=400, detail="Inactive user")
+    return current_user
+
+# Create FastAPI application
+app = FastAPI(title="JWT Authentication API", description="FastAPI backend with JWT authentication")
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Configure properly in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Authentication endpoints
+@app.post("/token", response_model=Token)
+async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
+    """
+    Endpoint to authenticate user and return JWT token
+    
+    - **username**: User's username
+    - **password**: User's password
+    
+    Returns JWT access token for authenticated requests
+    """
+    user = authenticate_user(fake_users_db, form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect usernimport fastapi
+from fastapi.security import OAuth2PasswordBearer
+
+ame or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    # Create access token with 30 minute expiration
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.username}, expires_delta=access_token_expires
+    )
+    
+    return {"access_token": access_token, "token_type": "bearer"}
+
+@app.post("/register", response_model=User)
+async def register_user(user_create: UserCreate):
+    """
+    Endpoint to register a new user
+    
+    - **username**: Desired username (must be unique)
+    - **email**: User's email address
+    - **full_name**: User's full name
+    - **password**: User's password (will be hashed)
+    
+    Returns the created user object
+    """
+    # Check if user already exists
+    if user_create.username in fake_users_db:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Username already registered"
+        )
+    
+    # Hash the password
+    hashed_password = get_password_hash(user_create.password)
+    
+    # Create user object
+    user_dict = user_create.dict()
+    user_dict["hashed_password"] = hashed_password
+    user_dict["disabled"] = False
+    
+    # Store in database (mock)
+    fake_users_db[user_create.username] = user_dict
+    
+    # Return user without password
+    return_user = user_dict.copy()
+    del return_user["hashed_password"]
+    return return_user
+
+# Protected endpoints (require authentication)
+@app.get("/users/me", response_model=User)
+async def read_users_me(current_user: User = Depends(get_current_active_user)):
+    """
+    Endpoint to get current user's profile
+    
+    Requires valid JWT token in Authorization header
+    
+    Returns authenticated user's profile information
+    """
+    return current_user
+
+@app.get("/users/me/items")
+async def read_own_items(current_user: User = Depends(get_current_active_user)):
+    """
+    Example protected endpoint
+    
+    Requires valid JWT token in Authorization header
+    
+    Returns user-specific data
+    """
+    return [{"item_id": "Foo", "owner": current_user.username}]
+
+# Public endpoint (no authentication required)
+@app.get("/")
+async def root():
+    """
+    Public root endpoint
+    
+    Returns API information
+    """
+    return {
+        "message": "Welcome to the JWT Authentication API",
+        "endpoints": {
+            "POST /token": "Get JWT token (requires username/password)",
+            "POST /register": "Register new user",
+            "GET /users/me": "Get current user profile (protected)",
+            "GET /users/me/items": "Get user items (protected)"
+        }
+    }
+
+def main():
+    """Main function to run the FastAPI application"""
+    import uvicorn
+    print("Starting JWT Authentication API...")
+    print("Available endpoints:")
+    print("  POST /token - Get JWT access token")
+    print("  POST /register - Register new user")
+    print("  GET /users/me - Get current user profile (protected)")
+    print("  GET /users/me/items - Get user items (protected)")
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+
+if __name__ == "__main__":
+    main()

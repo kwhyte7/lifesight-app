@@ -1,0 +1,69 @@
+<Context>
+You receive a selection in neovim that you need to replace with new code.
+The selection's contents may contain notes, incorporate the notes every time if there are some.
+consider the context of the selection and what you are suppose to be implementing
+<SELECTION_LOCATION>
+range(point(1,1),point(13,11))
+</SELECTION_LOCATION>
+<SELECTION_CONTENT>
+import fastapi
+from fastapi.security import OAuth2PasswordBearer
+
+# we're going to implement JWT token authentication to this fastapi backend
+# You should comment everything you do so I can learn from this, and so that it's easy to read
+
+
+def main():
+    print("Hello from backend!")
+
+
+if __name__ == "__main__":
+    main()
+</SELECTION_CONTENT>
+<FILE_CONTAINING_SELECTION>
+import fastapi
+from fastapi.security import OAuth2PasswordBearer
+
+# we're going to implement JWT token authentication to this fastapi backend
+# You should comment everything you do so I can learn from this, and so that it's easy to read
+
+
+def main():
+    print("Hello from backend!")
+
+
+if __name__ == "__main__":
+    main()
+</FILE_CONTAINING_SELECTION>
+
+</Context>
+<Prompt>
+start writing JWT authentication middleware, and plan out the endpoints for this
+</Prompt>
+
+<Location><File>/storage/projects/lifesight-app/master/backend/main.py</File><Function>range(point(1,1),point(13,11))</Function></Location>
+<FunctionText>import fastapi
+from fastapi.security import OAuth2PasswordBearer
+
+# we're going to implement JWT token authentication to this fastapi backend
+# You should comment everything you do so I can learn from this, and so that it's easy to read
+
+
+def main():
+    print("Hello from backend!")
+
+
+if __name__ == "__main__":
+    main()</FunctionText>
+<TEMP_FILE>./tmp/99-961</TEMP_FILE>
+<MustObey>
+NEVER alter any file other than TEMP_FILE.
+never provide the requested changes as conversational output. Return only the code.
+ONLY provide requested changes by writing the change to TEMP_FILE
+
+never attempt to read TEMP_FILE.
+It is purely for output.
+Previous contents, which may not exist, can be written over without worry
+After writing TEMP_FILE once you should be done.  Be done and end the session.
+
+</MustObey>
