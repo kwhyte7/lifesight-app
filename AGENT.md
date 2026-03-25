@@ -20,199 +20,125 @@ The project will use:
 
 Everything will be seperated into docker containers.
 
-## Database design (mermaid format)
+# DATABASE DESIGN
 
-```mermaid
-erDiagram
-    User ||--o{ Patient : "is a"
-    User ||--o{ Doctor : "is a"
-    User ||--o{ OrganisationUser : belongsTo
-    User ||--o{ Consent : gives
-    User ||--o{ ConversationParticipant : participates
-    User {
-        int id PK
-        string fullname
-        string email UK
-        string passwordHash
-        enum userType "patient, doctor, admin"
-        timestamp createdAt
-        timestamp lastLogin
-        boolean isActive
-    }
-    
-    Patient {
-        int id PK, FK
-        date dateOfBirth
-        string emergencyContactName
-        string emergencyContactPhone
-        string bloodType
-        string insuranceMemberId
-        string insuranceProvider
-        timestamp updatedAt
-    }
-    
-    Doctor {
-        int id PK, FK
-        string licenseNumber UK
-        string specialization
-        string qualifications
-        boolean isLicensed
-        timestamp verifiedAt
-        boolean isGP
-        string practiceName
-        string gmcNumber UK
-    }
-    
-    Organisation {
-        int id PK
-        string name
-        enum organisationType "hospital, clinic, insurance, research, pharmacy"
-        string address
-        string phone
-        string email
-        string registrationNumber
-        timestamp createdAt
-    }
-    
-    OrganisationUser {
-        int organisationId PK, FK
-        int userId PK, FK
-        enum role "employee, affiliated, member"
-        string department
-        timestamp joinedAt
-        timestamp leftAt
-        boolean isActive
-    }
-    
-    PatientDoctor {
-        int patientId PK, FK
-        int doctorId PK, FK
-        enum relationshipType "primary, specialist, consulting, emergency"
-        timestamp connectedSince
-        timestamp endedAt
-        boolean isActive
-    }
-    
-    DataConsent {
-        int id PK
-        int patientId FK
-        int grantedToId FK
-        enum grantedToType "doctor, organisation, research"
-        timestamp grantedAt
-        timestamp expiresAt
-        enum consentStatus "active, revoked, expired"
-        timestamp revokedAt
-        string revocationReason
-    }
-    
-    ConsentDataType {
-        int consentId PK, FK
-        enum dataType PK "sleep, heart_rate, demographics, medications, allergies, lab_results"
-        enum accessLevel "view, download, share_with_third_party, use_for_research"
-        boolean isConsented
-    }
-    
-    SleepData {
-        int id PK
-        int patientId FK
-        int consentId FK
-        date recordDate
-        int durationMinutes
-        int deepSleepMinutes
-        int remSleepMinutes
-        int lightSleepMinutes
-        int awakeMinutes
-        int qualityScore
-        int interruptions
-        string sourceDevice
-        timestamp recordedAt
-        enum dataStatus "active, archived, deleted"
-    }
-    
-    HeartRateData {
-        int id PK
-        int patientId FK
-        int consentId FK
-        timestamp recordedAt
-        int bpm
-        int restingBpm
-        int minBpm
-        int maxBpm
-        enum context "resting, active, sleeping, stressed, post_exercise"
-        string sourceDevice
-        enum dataStatus "active, archived, deleted"
-    }
-    
-    Conversation {
-        int id PK
-        enum conversationType "patient_ai, doctor_ai, patient_doctor, group_consultation"
-        string title
-        timestamp startedAt
-        timestamp lastMessageAt
-        boolean isActive
-    }
-    
-    ConversationParticipant {
-        int conversationId PK, FK
-        int participantId PK, FK
-        enum participantType "user, ai"
-        timestamp joinedAt
-        timestamp leftAt
-        enum participantStatus "active, left, removed"
-    }
-    
-    Message {
-        int id PK
-        int conversationId FK
-        int senderId FK
-        enum senderType "user, ai"
-        text content
-        timestamp sentAt
-        boolean isRead
-        timestamp readAt
-    }
-    
-    DataAccessAudit {
-        int id PK
-        int patientId FK
-        int accessedById FK
-        enum accessedByType "doctor, organisation, system, patient"
-        int consentId FK
-        enum accessType "view, download, modify, delete, share"
-        string dataType
-        json dataIds
-        string purpose
-        timestamp accessedAt
-        string ipAddress
-        string userAgent
-    }
-    
-    EmergencyAccess {
-        int id PK
-        int patientId FK
-        int doctorId FK
-        timestamp accessedAt
-        string reason
-        int approvedById FK
-        timestamp approvedAt
-        timestamp expiresAt
-        json dataAccessed
-        enum status "pending, approved, expired, revoked"
-    }
-    
-    Patient ||--o{ SleepData : generates
-    Patient ||--o{ HeartRateData : generates
-    Patient ||--o{ PatientDoctor : has
-    Patient ||--o{ DataConsent : manages
-    Doctor ||--o{ PatientDoctor : treats
-    Doctor ||--o{ EmergencyAccess : requests
-    DataConsent ||--o{ ConsentDataType : includes
-    DataConsent ||--o{ DataAccessAudit : "logs access for"
-    SleepData ||--o{ DataAccessAudit : "is accessed via"
-    HeartRateData ||--o{ DataAccessAudit : "is accessed via"
-    Conversation ||--o{ Message : contains
-    Conversation ||--o{ ConversationParticipant : has
-    Organisation ||--o{ OrganisationUser : has
-    Organisation ||--o{ DataConsent : "receives consent from"
 ```
+notation chen
 
+users [icon: user, color: blue] {
+  id string pk
+  name string
+  membershipId string
+  usedFreeTrial datetime
+  createdAt datetime
+}
+
+membership [color: blue] {
+  id string pk
+  ownerId string
+  isFreeTrial boolean
+  createdAt datetime
+}
+
+membership_users[color: blue] {
+  membershipId string pk
+  userid string pk
+  createdAt datetime
+}
+
+day [color: purple] {
+  id string pk
+  userid string
+  createdAt datetime
+}
+
+foods [color: red] {
+  id string pk
+  name string|null
+  imagelink string
+  nutritionalInformationId string
+  quantity int
+  createdAt datetime
+}
+
+day_foods [color: purple] { // string
+  dayid string pk
+  foodid string pk
+  createdAt datetime
+}
+
+nutritional_information [color: red] {
+  id string pk
+  name string
+  energy int
+  fat int
+  ofWhichSaturates int 
+  carbohydrates int
+  ofWhichSugars int
+  fibre int
+  protien int
+  salt int
+  createdAt datetime
+}
+
+ingredient [color: yellow] {
+  id string pk
+  standardisedName string
+  descriptionFromInternet string
+  keydangers string // allergies, carcinogens
+  keynegatives string // endocrin disruptors & minor
+  keybenefits string // health benefits
+  createdAt datetime
+}
+
+webSources [color: green] {
+  id string pk
+  title string
+  author string
+  url string
+  description string
+  createdAt datetime
+}
+
+ingredient_webSources [color: green] { // another junction
+  ingredientid string pk
+  sourceid string pk
+  createdAt datetime
+}
+
+food_ingredient [color: orange] { // junction
+  foodid string pk
+  ingredientid string pk
+  createdAt datetime
+}
+
+ingredientname_ingredient [color: yellow] { // another junction
+  ingredientname string pk 
+  ingredientid string pk
+  createdAt datetime
+}
+
+ingredient.id - ingredient_webSources.ingredientid
+webSources.id - ingredient_webSources.sourceid
+
+// foods.id > food_ingredientname.foodid
+//food_ingredientname.ingredientname - ingredientname_ingredient.ingredientname
+// ingredient.id - ingredientname_ingredient.ingredientid
+food_ingredient.foodid - foods.id
+food_ingredient.ingredientid - ingredient.id
+
+
+day.id < day_foods.dayid
+foods.id - day_foods.foodid
+foods.nutritionalInformationId > nutritional_information.id
+
+ingredientname_ingredient.ingredientid > ingredient.id
+
+users.id - day.userid
+
+membership.ownerId - users.id
+membership.id < membership_users.membershipId 
+users.id - membership_users.userid
+```
+```
+```
