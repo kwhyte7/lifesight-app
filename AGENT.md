@@ -11,6 +11,9 @@ Doctors can manage multiple patients where the doctor can see the shared data.
 Doctors and Patients should also have a chat history with the AI.
 Doctors will be able to have a central dashboard for multiple patients, and AI will periodically analyse if patient's health is critical or in an emergency state.
 
+# Right now
+At the minute, we will focus on food and calorie tracking.
+
 # Tech stack
 
 The project will use:
