@@ -30,7 +30,6 @@ class DayFoodBase(BaseModel):
 
 class FoodBase(BaseModel):
     id: int
-    description: str
     user_id: int
     name: str
     image_name: str
