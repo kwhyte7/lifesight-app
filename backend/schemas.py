@@ -30,17 +30,13 @@ class DayFoodBase(BaseModel):
 
 class FoodBase(BaseModel):
     id: int
+    description: str
     user_id: int
     name: str
     image_name: str
     image_path: str
     nutritional_information_id: str
     quantity: str
-    created_at: datetime
-
-class FoodImageBase(BaseModel):
-    id: str
-    food_id: int
     created_at: datetime
 
 class NutritionalInformationBase(BaseModel):
