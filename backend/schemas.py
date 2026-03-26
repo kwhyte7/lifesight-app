@@ -5,6 +5,7 @@ class UserBase(BaseModel):
     id: int
     username: str = Field(min_length=1, max_length=50)
     email: EmailStr # need email for resetting passwords
+    created_at: datetime
 
 class MembershipBase(BaseModel):
     id: int
@@ -29,7 +30,6 @@ class DayFoodBase(BaseModel):
 
 class FoodBase(BaseModel):
     id: int
-    user_id: int
     name: str
     image_name: str
     image_path: str
@@ -63,8 +63,7 @@ class IngredientNameIngredientBase(BaseModel):
 
 class IngredientBase(BaseModel):
     id: int
-    standardised_name: str
-    description_from_web: str
+    standardized_name: str
     key_dangers: str
     key_negatives: str
     key_benefits: str
