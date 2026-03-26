@@ -70,7 +70,6 @@ class IngredientNameIngredientBase(BaseModel):
 class IngredientBase(BaseModel):
     id: int
     standardized_name: str
-    description_from_web: str
     key_dangers: str
     key_negatives: str
     key_benefits: str
